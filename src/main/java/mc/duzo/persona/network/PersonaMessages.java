@@ -77,10 +77,11 @@ public class PersonaMessages {
 
         if (next) {
             persona.skills().selectNext();
-            return;
+        } else {
+            persona.skills().selectPrevious();
         }
 
-        persona.skills().selectPrevious();
+        player.sendMessage(persona.skills().selected().name());
     }
     private static void recieveSkillChangeRequest(ServerPlayerEntity player, PacketByteBuf buf) {
         boolean next = buf.readBoolean();

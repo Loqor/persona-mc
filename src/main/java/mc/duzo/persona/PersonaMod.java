@@ -2,10 +2,12 @@ package mc.duzo.persona;
 
 import mc.duzo.persona.common.persona.PersonaRegistry;
 import mc.duzo.persona.common.skill.SkillRegistry;
+import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
 import mc.duzo.persona.network.PersonaMessages;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -22,6 +24,13 @@ public class PersonaMod implements ModInitializer {
 		SkillRegistry.init();
 		PersonaRegistry.init();
 		PersonaMessages.initialise();
+
+		ServerPlayerEvents.AFTER_RESPAWN.register((old, player, alive) -> {
+			PlayerData data = ServerData.getPlayerState(player);
+
+			data.addSP(PlayerData.MAX_SP);
+			ServerData.getServerState(player.getServer()).markDirty();
+		});
 
 		// Temporary for testing, remove soon.
 		ServerPlayConnectionEvents.JOIN.register(((handler, sender, server) -> {

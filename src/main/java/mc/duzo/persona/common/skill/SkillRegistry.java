@@ -19,8 +19,8 @@ public class SkillRegistry {
         return REGISTRY.get(id);
     }
 
-    public static Skill DIA = register(new Skill.Builder(new Identifier(PersonaMod.MOD_ID, "dia"), (persona, target) -> target.setHealth(target.getHealth() + 4)).build());
-    public static Skill CLEAVE = register(new Skill.Builder(new Identifier(PersonaMod.MOD_ID, "cleave"), (persona, target) -> target.damage(target.getDamageSources().generic(), 4)).build());
+    public static Skill DIA = register(Skill.create(new Identifier(PersonaMod.MOD_ID, "dia"), (source, persona, target) -> target.setHealth(target.getHealth() + 4), false, 3));
+    public static Skill CLEAVE = register(Skill.create(new Identifier(PersonaMod.MOD_ID, "cleave"), (source, persona, target) -> target.damage(target.getDamageSources().generic(), 4), true, 5));
 
     public static void init() {
 

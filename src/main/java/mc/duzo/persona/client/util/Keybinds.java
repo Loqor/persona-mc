@@ -64,52 +64,56 @@ public class Keybinds {
     }
 
     private static void tickTargetingKey(ClientPlayerEntity player) {
-        if (!targetingKey.wasPressed() && wasTargetingHeld) {
-            wasTargetingHeld = false;
+        if (!targetingKey.wasPressed()) {
+            if (wasTargetingHeld)
+                wasTargetingHeld = false;
             return;
         }
 
-        if (wasTargetingHeld || !targetingKey.isPressed()) return;
+        if (wasTargetingHeld) return;
 
-        wasTargetingHeld = true; // Does not appear to work
+        wasTargetingHeld = true;
 
         PersonaClientMessages.sendTargetChangeRequest();
     }
 
     private static void tickNextSkillKey(ClientPlayerEntity player) {
-        if (!nextSkillKey.wasPressed() && wasNextSkillHeld) {
-            wasNextSkillHeld = false;
+        if (!nextSkillKey.wasPressed()) {
+            if (wasNextSkillHeld)
+                wasNextSkillHeld = false;
             return;
         }
 
-        if (wasNextSkillHeld || !nextSkillKey.isPressed()) return;
+        if (wasNextSkillHeld) return;
 
-        wasNextSkillHeld = true; // Does not appear to work
+        wasNextSkillHeld = true;
 
         PersonaClientMessages.sendChangeSkillRequest(true);
     }
     private static void tickPreviousSkillKey(ClientPlayerEntity player) {
-        if (!previousSkillKey.wasPressed() && wasPreviousSkillHeld) {
-            wasPreviousSkillHeld = false;
+        if (!previousSkillKey.wasPressed()) {
+            if (wasPreviousSkillHeld)
+                wasPreviousSkillHeld = false;
             return;
         }
 
-        if (wasPreviousSkillHeld || !previousSkillKey.isPressed()) return;
+        if (wasPreviousSkillHeld) return;
 
-        wasPreviousSkillHeld = true; // Does not appear to work
+        wasPreviousSkillHeld = true;
 
         PersonaClientMessages.sendChangeSkillRequest(false);
     }
 
     private static void tickUseSkillKey(ClientPlayerEntity player) {
-        if (!useSkillKey.wasPressed() && wasUseSkillHeld) {
-            wasUseSkillHeld = false;
+        if (!useSkillKey.wasPressed()) {
+            if (wasUseSkillHeld)
+                wasUseSkillHeld = false;
             return;
         }
 
-        if (wasUseSkillHeld || !useSkillKey.isPressed()) return;
+        if (wasUseSkillHeld) return;
 
-        wasUseSkillHeld = true; // Does not appear to work
+        wasUseSkillHeld = true;
 
         PersonaClientMessages.sendUseSkillRequest();
     }

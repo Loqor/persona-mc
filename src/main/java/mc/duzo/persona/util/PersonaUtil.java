@@ -1,6 +1,7 @@
 package mc.duzo.persona.util;
 
 import mc.duzo.persona.common.persona.Persona;
+import mc.duzo.persona.common.skill.Skill;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
 import net.minecraft.entity.LivingEntity;
@@ -25,8 +26,25 @@ public class PersonaUtil {
 
         if (foundTarget.isEmpty()) return;
 
-        persona.skills().selected().run(persona, foundTarget.get());
-        createSkillParticles(foundTarget.get());
+        if (!canUseSkill(player, persona.skills().selected())) return;
+
+        LivingEntity target = foundTarget.get();
+
+        persona.skills().selected().run(player, persona, target);
+        createSkillParticles(target);
+
+        // If its dead now give them SP
+        if (!target.isAlive()) {
+            data.addSP((int) (target.getMaxHealth() * 0.1));
+        }
+    }
+
+    public static boolean canUseSkill(ServerPlayerEntity player, Skill skill) {
+        PlayerData data = ServerData.getPlayerState(player);
+
+        if (skill.usesHealth()) return true;
+
+        return data.hasEnoughSP(skill.cost());
     }
 
     /**

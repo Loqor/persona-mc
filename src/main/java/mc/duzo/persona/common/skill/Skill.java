@@ -1,9 +1,12 @@
 package mc.duzo.persona.common.skill;
 
 import mc.duzo.persona.common.persona.Persona;
+import mc.duzo.persona.data.PlayerData;
+import mc.duzo.persona.data.ServerData;
 import mc.duzo.persona.util.Identifiable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -14,11 +17,27 @@ public abstract class Skill implements Identifiable {
         this.id = id;
     }
 
-    public abstract void run(Persona persona, LivingEntity target);
+    public void run(ServerPlayerEntity source, Persona persona, LivingEntity target) {
+        PlayerData data = ServerData.getPlayerState(source);
 
+        if (this.usesHealth()) {
+            source.damage(source.getDamageSources().generic(), source.getMaxHealth() * (this.cost() / 100f));
+            return;
+        }
+
+        data.removeSP(this.cost());
+        ServerData.getServerState(source.getServer()).markDirty();
+        source.sendMessage(Text.literal(data.spiritPoints() + " SP remaining"), false);
+    }
+
+    public Text name() {
+        return Text.translatable("skill." + id.getNamespace() + "." + id.getPath());
+    }
     public Text description() {
         return Text.translatable("skill." + id.getNamespace() + "." + id.getPath());
     }
+    public abstract boolean usesHealth();
+    public abstract int cost();
 
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
@@ -39,31 +58,32 @@ public abstract class Skill implements Identifiable {
         return SkillRegistry.get(new Identifier(nbt.getString("id")));
     }
 
-    public interface RunSkill {
-        void run(Persona persona, LivingEntity target);
+    public static Skill create(Identifier id, RunSkill onRun, boolean usesHealth, int cost) {
+        return new Skill(id) {
+            @Override
+            public void run(ServerPlayerEntity source, Persona persona, LivingEntity target) {
+                super.run(source, persona, target);
+
+                onRun.run(source, persona, target);
+            }
+
+            @Override
+            public boolean usesHealth() {
+                return usesHealth;
+            }
+
+            @Override
+            public int cost() {
+                return cost;
+            }
+
+            @Override
+            public Identifier id() {
+                return id;
+            }
+        };
     }
-
-    public static class Builder {
-        private final Identifier id;
-        private final RunSkill onRun;
-
-        public Builder(Identifier id, RunSkill onRun) {
-            this.id = id;
-            this.onRun = onRun;
-        }
-
-        public Skill build() {
-            return new Skill(id) {
-                @Override
-                public Identifier id() {
-                    return id;
-                }
-
-                @Override
-                public void run(Persona persona, LivingEntity target) {
-                    onRun.run(persona, target);
-                }
-            };
-        }
+    public interface RunSkill {
+        void run(ServerPlayerEntity source, Persona persona, LivingEntity target);
     }
 }

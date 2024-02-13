@@ -16,9 +16,12 @@ import java.util.Optional;
  * @author duzo
  */
 public class PlayerData {
+    public static final int MAX_SP = 100;
+
     private Persona persona;
     private boolean hasTarget;
     private int target;
+    private int spiritPoints;
 
     public Optional<Persona> findPersona() {
         return Optional.ofNullable(this.persona);
@@ -67,11 +70,26 @@ public class PlayerData {
         return Optional.of((LivingEntity) target);
     }
 
+    public int spiritPoints() {
+        return this.spiritPoints;
+    }
+    public void removeSP(int amount) {
+        this.spiritPoints = Math.max(0, this.spiritPoints - amount);
+    }
+    public void addSP(int amount) {
+        this.spiritPoints = Math.min(MAX_SP, this.spiritPoints + amount);
+    }
+    public boolean hasEnoughSP(int amount) {
+        return this.spiritPoints >= amount;
+    }
+
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
 
         if (this.findPersona().isPresent())
             nbt.put("persona", this.persona.toNbt());
+
+        nbt.putInt("SP", this.spiritPoints());
 
         return nbt;
     }
@@ -81,6 +99,9 @@ public class PlayerData {
 
         if (nbt.contains("persona"))
             data.persona = new Persona(nbt.getCompound("persona"));
+
+        if (nbt.contains("SP"))
+            data.spiritPoints = nbt.getInt("SP");
 
         return data;
     }
