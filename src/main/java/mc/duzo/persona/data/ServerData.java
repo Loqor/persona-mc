@@ -9,6 +9,8 @@ import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -23,7 +25,6 @@ public class ServerData extends PersistentState {
 
     @Override
     public NbtCompound writeNbt(NbtCompound nbt) {
-
         NbtCompound playersNbt = new NbtCompound();
 
         players.forEach(((uuid, playerData) -> {
@@ -66,5 +67,9 @@ public class ServerData extends PersistentState {
         PlayerData playerData = serverData.players.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());
 
         return playerData;
+    }
+
+    public static Set<UUID> getKeys(MinecraftServer server) {
+        return getServerState(server).players.keySet();
     }
 }

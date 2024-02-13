@@ -30,7 +30,7 @@ public class PlayerData {
         PlayerData data = new PlayerData();
 
         if (nbt.contains("persona"))
-            data.persona = Persona.fromNbt(nbt.getCompound("persona"));
+            data.persona = new Persona(nbt.getCompound("persona"));
 
         return data;
     }

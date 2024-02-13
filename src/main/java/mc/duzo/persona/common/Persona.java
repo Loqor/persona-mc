@@ -10,6 +10,11 @@ public class Persona implements Identifiable {
     protected Persona(Identifier id) {
         this.id = id;
     }
+    public Persona(NbtCompound nbt) {
+        this.id = new Identifier(nbt.getString("id"));
+
+        this.loadNbt(nbt);
+    }
 
     @Override
     public Identifier id() {
@@ -24,9 +29,11 @@ public class Persona implements Identifiable {
         return nbt;
     }
 
-    public static Persona fromNbt(NbtCompound nbt) {
-        Persona created = new Persona(new Identifier(nbt.getString("id")));
+    public Persona loadNbt(NbtCompound nbt) {
+        if (!(this.id.equals(new Identifier(nbt.getString("id"))))) {
+            throw new RuntimeException("Attempted to load persona with mismatched id");
+        }
 
-        return created;
+        return this;
     }
 }

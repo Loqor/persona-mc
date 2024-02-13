@@ -1,5 +1,6 @@
 package mc.duzo.persona;
 
+import mc.duzo.persona.network.PersonaMessages;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -11,6 +12,6 @@ public class PersonaMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
+		PersonaMessages.initialise();
 	}
 }
