@@ -16,10 +16,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"mc.duzo.persona.Persona"
+          "mc.duzo.persona.PersonaMod"
+		],
+		"client": [
+			"mc.duzo.persona.client.PersonaModClient"
 		],
 		"fabric-datagen": [
-			"mc.duzo.persona.PersonaDataGenerator"
+			"mc.duzo.persona.datagen.PersonaDataGenerator"
 		]
 	},
 	"mixins": [
