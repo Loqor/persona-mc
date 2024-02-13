@@ -3,6 +3,7 @@ package mc.duzo.persona.client.network;
 import mc.duzo.persona.client.data.ClientData;
 import mc.duzo.persona.network.PersonaMessages;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
@@ -20,5 +21,9 @@ public class PersonaClientMessages {
         UUID uuid = buf.readUuid();
         NbtCompound nbt = buf.readNbt();
         recievePlayerData(uuid, nbt);
+    }
+
+    public static void sendTargetChangeRequest() {
+        ClientPlayNetworking.send(PersonaMessages.PRESS_TARGET, PacketByteBufs.empty());
     }
 }
