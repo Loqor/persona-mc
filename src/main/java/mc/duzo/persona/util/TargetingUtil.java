@@ -1,6 +1,7 @@
 package mc.duzo.persona.util;
 
-import net.minecraft.entity.Entity;
+import mc.duzo.persona.data.PlayerData;
+import mc.duzo.persona.data.ServerData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -12,6 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Optional;
 
 public class TargetingUtil {
+    private static final double MAX_DISTANCE_FROM_TARGET = 8;
 
     /**
      * Finds the entity that another entity is looking at
@@ -31,5 +33,29 @@ public class TargetingUtil {
         if (entityHitResult == null || entityHitResult.getType() != HitResult.Type.ENTITY) return Optional.empty();
 
         return Optional.ofNullable((LivingEntity) entityHitResult.getEntity());
+    }
+
+    public static double distanceFromTarget(LivingEntity source, LivingEntity target) {
+        return source.getPos().distanceTo(target.getPos());
+    }
+
+    /**
+     * Verifies whether the player has a valid target
+     * If not, sets the target to null
+     * @return true if the player has a valid target
+     */
+    public static boolean verifyTarget(ServerPlayerEntity player) {
+        PlayerData data = ServerData.getPlayerState(player);
+
+        if (data.findTarget(player.getServerWorld()).isEmpty()) return true;
+
+        LivingEntity target = data.findTarget(player.getServerWorld()).get();
+
+        boolean invalid = distanceFromTarget(player, target) > MAX_DISTANCE_FROM_TARGET;
+
+        if (!invalid) return true;
+
+        data.setTarget(null);
+        return false;
     }
 }

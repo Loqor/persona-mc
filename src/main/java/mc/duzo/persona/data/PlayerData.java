@@ -5,11 +5,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Player specific nbt data which will be stored in {@link ServerData}
@@ -21,7 +20,7 @@ public class PlayerData {
     private boolean hasTarget;
     private int target;
 
-    public Optional<Persona> getPersona() {
+    public Optional<Persona> findPersona() {
         return Optional.ofNullable(this.persona);
     }
 
@@ -57,12 +56,10 @@ public class PlayerData {
             ServerData.getServerState(target.getServer()).markDirty();
         }
     }
-    public static Optional<LivingEntity> getTarget(ServerPlayerEntity player) {
-        PlayerData data = ServerData.getPlayerState(player);
+    public Optional<LivingEntity> findTarget(ServerWorld world) {
+        if (!this.hasTarget) return Optional.empty();
 
-        if (!data.hasTarget) return Optional.empty();
-
-        Entity target = player.getServerWorld().getEntityById(data.target);
+        Entity target = world.getEntityById(this.target);
 
         if (!(target instanceof LivingEntity))
             return Optional.empty();
@@ -73,7 +70,7 @@ public class PlayerData {
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
 
-        if (this.getPersona().isPresent())
+        if (this.findPersona().isPresent())
             nbt.put("persona", this.persona.toNbt());
 
         return nbt;

@@ -4,6 +4,7 @@ import mc.duzo.persona.PersonaMod;
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
+import mc.duzo.persona.util.PersonaUtil;
 import mc.duzo.persona.util.TargetingUtil;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -59,15 +60,20 @@ public class PersonaMessages {
         LivingEntity target = found.orElse(null);
 
         PlayerData data = ServerData.getPlayerState(player);
+
+        if (player.isSneaking()) {
+            target = player;
+        }
+
         data.setTarget(target);
     }
 
     private static void recieveSkillChangeRequest(ServerPlayerEntity player, boolean next) {
         PlayerData data = ServerData.getPlayerState(player);
 
-        if (data.getPersona().isEmpty()) return;
+        if (data.findPersona().isEmpty()) return;
 
-        Persona persona = data.getPersona().get();
+        Persona persona = data.findPersona().get();
 
         if (next) {
             persona.skills().selectNext();
@@ -82,16 +88,6 @@ public class PersonaMessages {
     }
 
     private static void recieveUseSkillRequest(ServerPlayerEntity player) {
-        PlayerData data = ServerData.getPlayerState(player);
-
-        if (data.getPersona().isEmpty()) return;
-
-        Persona persona = data.getPersona().get();
-        Optional<LivingEntity> foundTarget = PlayerData.getTarget(player);
-
-        if (foundTarget.isEmpty()) return;
-
-        persona.skills().selected().run(persona, foundTarget.get());
-        System.out.println("Using skill: " + persona.skills().selected().id());
+        PersonaUtil.useSkill(player);
     }
 }
