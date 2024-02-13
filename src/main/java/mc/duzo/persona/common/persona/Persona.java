@@ -1,17 +1,21 @@
-package mc.duzo.persona.common;
+package mc.duzo.persona.common.persona;
 
+import mc.duzo.persona.common.skill.SkillSet;
 import mc.duzo.persona.util.Identifiable;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 public class Persona implements Identifiable {
     private final Identifier id;
+    private final SkillSet skills;
 
-    protected Persona(Identifier id) {
+    public Persona(Identifier id, SkillSet skills) {
         this.id = id;
+        this.skills = skills;
     }
     public Persona(NbtCompound nbt) {
         this.id = new Identifier(nbt.getString("id"));
+        this.skills = SkillSet.fromNbt(nbt.getCompound("SkillSet"));
 
         this.loadNbt(nbt);
     }
@@ -21,10 +25,15 @@ public class Persona implements Identifiable {
         return this.id;
     }
 
+    public SkillSet skills() {
+        return this.skills;
+    }
+
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
 
         nbt.putString("id", this.id.toString());
+        nbt.put("SkillSet", this.skills.toNbt());
 
         return nbt;
     }

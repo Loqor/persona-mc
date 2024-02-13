@@ -26,4 +26,16 @@ public class PersonaClientMessages {
     public static void sendTargetChangeRequest() {
         ClientPlayNetworking.send(PersonaMessages.PRESS_TARGET, PacketByteBufs.empty());
     }
+
+    public static void sendChangeSkillRequest(boolean next) {
+        PacketByteBuf buf = PacketByteBufs.create();
+
+        buf.writeBoolean(next);
+
+        ClientPlayNetworking.send(PersonaMessages.CHANGE_SKILL, buf);
+    }
+
+    public static void sendUseSkillRequest() {
+        ClientPlayNetworking.send(PersonaMessages.USE_SKILL, PacketByteBufs.empty());
+    }
 }

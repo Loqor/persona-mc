@@ -1,6 +1,7 @@
 package mc.duzo.persona.network;
 
 import mc.duzo.persona.PersonaMod;
+import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
 import mc.duzo.persona.util.TargetingUtil;
@@ -17,9 +18,13 @@ import java.util.UUID;
 public class PersonaMessages {
     public static final Identifier SYNC_DATA = new Identifier(PersonaMod.MOD_ID, "sync_data");
     public static final Identifier PRESS_TARGET = new Identifier(PersonaMod.MOD_ID, "press_ability");
+    public static final Identifier CHANGE_SKILL = new Identifier(PersonaMod.MOD_ID, "change_skill");
+    public static final Identifier USE_SKILL = new Identifier(PersonaMod.MOD_ID, "use_skill");
 
     public static void initialise() {
         ServerPlayNetworking.registerGlobalReceiver(PRESS_TARGET, ((server, player, handler, buf, responseSender) -> recieveTargetRequest(player)));
+        ServerPlayNetworking.registerGlobalReceiver(CHANGE_SKILL, ((server, player, handler, buf, responseSender) -> recieveSkillChangeRequest(player, buf)));
+        ServerPlayNetworking.registerGlobalReceiver(USE_SKILL, ((server, player, handler, buf, responseSender) -> recieveUseSkillRequest(player)));
     }
 
     public static void syncAllData(ServerPlayerEntity target) {
@@ -55,5 +60,38 @@ public class PersonaMessages {
 
         PlayerData data = ServerData.getPlayerState(player);
         data.setTarget(target);
+    }
+
+    private static void recieveSkillChangeRequest(ServerPlayerEntity player, boolean next) {
+        PlayerData data = ServerData.getPlayerState(player);
+
+        if (data.getPersona().isEmpty()) return;
+
+        Persona persona = data.getPersona().get();
+
+        if (next) {
+            persona.skills().selectNext();
+            return;
+        }
+
+        persona.skills().selectPrevious();
+    }
+    private static void recieveSkillChangeRequest(ServerPlayerEntity player, PacketByteBuf buf) {
+        boolean next = buf.readBoolean();
+        recieveSkillChangeRequest(player, next);
+    }
+
+    private static void recieveUseSkillRequest(ServerPlayerEntity player) {
+        PlayerData data = ServerData.getPlayerState(player);
+
+        if (data.getPersona().isEmpty()) return;
+
+        Persona persona = data.getPersona().get();
+        Optional<LivingEntity> foundTarget = PlayerData.getTarget(player);
+
+        if (foundTarget.isEmpty()) return;
+
+        persona.skills().selected().run(persona, foundTarget.get());
+        System.out.println("Using skill: " + persona.skills().selected().id());
     }
 }
