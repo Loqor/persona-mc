@@ -38,6 +38,7 @@ public abstract class Skill implements Identifiable {
     }
     public abstract boolean usesHealth();
     public abstract int cost();
+    public abstract double cooldown();
 
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
@@ -58,7 +59,7 @@ public abstract class Skill implements Identifiable {
         return SkillRegistry.get(new Identifier(nbt.getString("id")));
     }
 
-    public static Skill create(Identifier id, RunSkill onRun, boolean usesHealth, int cost) {
+    public static Skill create(Identifier id, RunSkill onRun, boolean usesHealth, int cost, double cooldown) {
         return new Skill(id) {
             @Override
             public void run(ServerPlayerEntity source, Persona persona, LivingEntity target) {
@@ -75,6 +76,11 @@ public abstract class Skill implements Identifiable {
             @Override
             public int cost() {
                 return cost;
+            }
+
+            @Override
+            public double cooldown() {
+                return cooldown;
             }
 
             @Override

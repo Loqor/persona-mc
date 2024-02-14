@@ -25,6 +25,6 @@ public class PersonaRegistry {
     public static Persona DEV;
 
     public static void init() {
-        DEV = register(new Persona(new Identifier(PersonaMod.MOD_ID, "dev"), new SkillSet(SkillRegistry.DIA, SkillRegistry.CLEAVE)));
+        DEV = register(new Persona(new Identifier(PersonaMod.MOD_ID, "dev"), new SkillSet(SkillRegistry.DIA, SkillRegistry.CLEAVE, SkillRegistry.ZIO)));
     }
 }

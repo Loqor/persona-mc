@@ -29,9 +29,12 @@ public class PersonaUtil {
         if (!canUseSkill(player, persona.skills().selected())) return;
 
         LivingEntity target = foundTarget.get();
+        Skill selected = persona.skills().selected();
 
-        persona.skills().selected().run(player, persona, target);
+        selected.run(player, persona, target);
         createSkillParticles(target);
+
+        createCooldown(player, selected.cooldown());
 
         // If its dead now give them SP
         if (!target.isAlive()) {
@@ -39,7 +42,16 @@ public class PersonaUtil {
         }
     }
 
+    public static void createCooldown(ServerPlayerEntity player, double seconds) {
+        DeltaTimeManager.createDelay("skill-cooldown-" + player.getUuidAsString(), (long) (seconds * 1000L));
+    }
+    public static boolean onCooldown(ServerPlayerEntity player) {
+        return DeltaTimeManager.isOnDelay("skill-cooldown-" + player.getUuidAsString());
+    }
+
     public static boolean canUseSkill(ServerPlayerEntity player, Skill skill) {
+        if (onCooldown(player)) return false;
+
         PlayerData data = ServerData.getPlayerState(player);
 
         if (skill.usesHealth()) return true;

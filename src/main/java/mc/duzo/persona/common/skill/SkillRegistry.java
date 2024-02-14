@@ -2,10 +2,14 @@ package mc.duzo.persona.common.skill;
 
 import mc.duzo.persona.PersonaMod;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 
 public class SkillRegistry {
@@ -19,8 +23,29 @@ public class SkillRegistry {
         return REGISTRY.get(id);
     }
 
-    public static Skill DIA = register(Skill.create(new Identifier(PersonaMod.MOD_ID, "dia"), (source, persona, target) -> target.setHealth(target.getHealth() + 4), false, 3));
-    public static Skill CLEAVE = register(Skill.create(new Identifier(PersonaMod.MOD_ID, "cleave"), (source, persona, target) -> target.damage(target.getDamageSources().generic(), 4), true, 5));
+    public static Skill DIA = register(Skill.create(
+            new Identifier(PersonaMod.MOD_ID, "dia"),
+            (source, persona, target) -> target.setHealth(target.getHealth() + 4),
+            false,
+            3,
+            1
+    ));
+    public static Skill CLEAVE = register(Skill.create(
+            new Identifier(PersonaMod.MOD_ID, "cleave"),
+            (source, persona, target) -> target.damage(target.getDamageSources().generic(), 4),
+            true,
+            5,
+            1
+    ));
+    public static Skill ZIO = register(Skill.create(
+            new Identifier(PersonaMod.MOD_ID, "zio"),
+            (source, persona, target) -> {
+                EntityType.LIGHTNING_BOLT.spawn((ServerWorld) target.getWorld(), target.getBlockPos(), SpawnReason.TRIGGERED);
+            },
+            false,
+            4,
+            2
+    ));
 
     public static void init() {
 

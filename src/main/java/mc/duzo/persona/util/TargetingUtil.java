@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Optional;
 
 public class TargetingUtil {
-    private static final double MAX_DISTANCE_FROM_TARGET = 8;
+    private static final double MAX_DISTANCE_FROM_TARGET = 32;
 
     /**
      * Finds the entity that another entity is looking at
