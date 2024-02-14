@@ -33,14 +33,14 @@ public class Keybinds {
         nextSkillKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key." + PersonaMod.MOD_ID + ".next_skill",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_B,
+                GLFW.GLFW_KEY_N,
                 "category." + PersonaMod.MOD_ID
         ));
 
         previousSkillKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key." + PersonaMod.MOD_ID + ".previous_skill",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_N,
+                GLFW.GLFW_KEY_B,
                 "category." + PersonaMod.MOD_ID
         ));
 

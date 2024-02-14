@@ -21,6 +21,7 @@ import java.util.UUID;
  * @author duzo
  */
 public class ServerData extends PersistentState {
+    public boolean hasVelvetRoom;
     private HashMap<UUID, PlayerData> players = new HashMap<>();
 
     @Override
@@ -32,6 +33,8 @@ public class ServerData extends PersistentState {
         }));
 
         nbt.put("players", playersNbt);
+
+        nbt.putBoolean("HasVelvetRoom", hasVelvetRoom);
 
         return nbt;
     }
@@ -46,6 +49,8 @@ public class ServerData extends PersistentState {
             UUID uuid = UUID.fromString(key);
             data.players.put(uuid, playerData);
         });
+
+        data.hasVelvetRoom = nbt.getBoolean("HasVelvetRoom");
 
         return data;
     }

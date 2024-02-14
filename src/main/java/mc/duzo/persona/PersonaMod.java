@@ -1,6 +1,7 @@
 package mc.duzo.persona;
 
 import mc.duzo.persona.client.PersonaModClient;
+import mc.duzo.persona.commands.Commands;
 import mc.duzo.persona.common.PersonaSounds;
 import mc.duzo.persona.common.persona.PersonaRegistry;
 import mc.duzo.persona.common.skill.SkillRegistry;
@@ -15,10 +16,13 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,12 +30,15 @@ public class PersonaMod implements ModInitializer {
 	public static final String MOD_ID = "persona";
     public static final Logger LOGGER = LoggerFactory.getLogger("persona");
 
+	public static MinecraftServer server;
+
 	@Override
 	public void onInitialize() {
 		PersonaSounds.init();
 		SkillRegistry.init();
 		PersonaRegistry.init();
 		PersonaMessages.initialise();
+		Commands.init();
 
 		registerEvents();
 	}
@@ -84,5 +91,23 @@ public class PersonaMod implements ModInitializer {
 			// Temporary for testing, remove soon.
 			ServerData.getPlayerState(player).setPersona(PersonaRegistry.DEV, server);
 		}));
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> PersonaMod.server = server);
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> PersonaMod.server = null);
+		ServerWorldEvents.UNLOAD.register((server, world) -> {
+			if (world.getRegistryKey() == World.OVERWORLD) {
+				PersonaMod.server = null;
+			}
+		});
+
+		ServerWorldEvents.LOAD.register((server, world) -> {
+			if (world.getRegistryKey() == World.OVERWORLD) {
+				PersonaMod.server = server;
+			}
+		});
+	}
+
+	public static boolean hasServer() {
+		return server != null;
 	}
 }
