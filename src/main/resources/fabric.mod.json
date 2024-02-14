@@ -3,13 +3,13 @@
 	"id": "persona",
 	"version": "${version}",
 	"name": "persona",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "PERSONA",
 	"authors": [
-		"Me!"
+		"Duzo"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://duzo.is-a.dev/",
+		"sources": "https://github.com/Duzos/persona-mc/"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/persona/icon.png",

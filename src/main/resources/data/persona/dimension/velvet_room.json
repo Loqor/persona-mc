@@ -1,0 +1,15 @@
+{
+  "type": "persona:velvet_room_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "persona:velvet",
+      "lakes": false,
+      "features": false,
+      "layers": [],
+      "structures": {
+        "structures": {}
+      }
+    }
+  }
+}

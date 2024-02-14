@@ -17,15 +17,31 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class PersonaMessages {
+    // Data
     public static final Identifier SYNC_DATA = new Identifier(PersonaMod.MOD_ID, "sync_data");
-    public static final Identifier PRESS_TARGET = new Identifier(PersonaMod.MOD_ID, "press_ability");
+    public static final Identifier ASK_DATA = new Identifier(PersonaMod.MOD_ID, "ask_data");
+
+    // Skills
+    public static final Identifier PRESS_TARGET = new Identifier(PersonaMod.MOD_ID, "press_target");
     public static final Identifier CHANGE_SKILL = new Identifier(PersonaMod.MOD_ID, "change_skill");
     public static final Identifier USE_SKILL = new Identifier(PersonaMod.MOD_ID, "use_skill");
+
+    // Velvet Room
+    public static final Identifier CHANGED_VELVET = new Identifier(PersonaMod.MOD_ID, "changed_velvet");
 
     public static void initialise() {
         ServerPlayNetworking.registerGlobalReceiver(PRESS_TARGET, ((server, player, handler, buf, responseSender) -> recieveTargetRequest(player)));
         ServerPlayNetworking.registerGlobalReceiver(CHANGE_SKILL, ((server, player, handler, buf, responseSender) -> recieveSkillChangeRequest(player, buf)));
         ServerPlayNetworking.registerGlobalReceiver(USE_SKILL, ((server, player, handler, buf, responseSender) -> recieveUseSkillRequest(player)));
+        ServerPlayNetworking.registerGlobalReceiver(ASK_DATA, ((server, player, handler, buf, responseSender) -> recieveDataRequest(player, buf)));
+    }
+
+    public static void sendVelvetChange(ServerPlayerEntity player, boolean entry) {
+        PacketByteBuf buf = PacketByteBufs.create();
+
+        buf.writeBoolean(entry);
+
+        ServerPlayNetworking.send(player, CHANGED_VELVET, buf);
     }
 
     public static void syncAllData(ServerPlayerEntity target) {
@@ -90,5 +106,13 @@ public class PersonaMessages {
 
     private static void recieveUseSkillRequest(ServerPlayerEntity player) {
         PersonaUtil.useSkill(player);
+    }
+
+    private static void recieveDataRequest(ServerPlayerEntity player, UUID uuid) {
+        syncData(player, uuid);
+    }
+    private static void recieveDataRequest(ServerPlayerEntity player, PacketByteBuf buf) {
+        UUID uuid = buf.readUuid();
+        recieveDataRequest(player, uuid);
     }
 }
