@@ -10,6 +10,7 @@ public class PersonaSounds {
     public static final SoundEvent VELVET_MUSIC = register("velvet_room");
     public static final SoundEvent WELCOME_VELVET = register("welcome_velvet");
     public static final SoundEvent ATTACK = register("attack");
+    public static final SoundEvent DIA = register("dia");
     public static final SoundEvent PERSONA_SHOUT = register("persona_shout");
     public static final SoundEvent ARSENE_SHOUT = register("arsene");
 

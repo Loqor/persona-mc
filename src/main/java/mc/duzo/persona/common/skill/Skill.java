@@ -1,5 +1,6 @@
 package mc.duzo.persona.common.skill;
 
+import mc.duzo.persona.common.PersonaSounds;
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
@@ -8,8 +9,10 @@ import mc.duzo.persona.util.Identifiable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Skill implements Identifiable {
     private final Identifier id;
@@ -48,6 +51,9 @@ public abstract class Skill implements Identifiable {
     public abstract boolean usesHealth();
     public abstract int cost();
     public abstract double cooldown();
+    public SoundEvent useSound() {
+        return PersonaSounds.ATTACK;
+    }
 
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
@@ -68,7 +74,7 @@ public abstract class Skill implements Identifiable {
         return SkillRegistry.get(new Identifier(nbt.getString("id")));
     }
 
-    public static Skill create(Identifier id, RunSkill onRun, boolean usesHealth, int cost, double cooldown) {
+    public static Skill create(Identifier id, RunSkill onRun, boolean usesHealth, int cost, double cooldown, @Nullable SoundEvent sound) {
         return new Skill(id) {
             @Override
             public void run(ServerPlayerEntity source, Persona persona, LivingEntity target) {
@@ -96,7 +102,16 @@ public abstract class Skill implements Identifiable {
             public Identifier id() {
                 return id;
             }
+
+            @Override
+            public SoundEvent useSound() {
+                if (sound == null) return super.useSound();
+                return sound;
+            }
         };
+    }
+    public static Skill create(Identifier id, RunSkill onRun, boolean usesHealth, int cost, double cooldown) {
+        return create(id, onRun, usesHealth, cost, cooldown, null);
     }
     public interface RunSkill {
         void run(ServerPlayerEntity source, Persona persona, LivingEntity target);

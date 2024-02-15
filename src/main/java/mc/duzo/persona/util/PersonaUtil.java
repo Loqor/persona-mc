@@ -41,7 +41,7 @@ public class PersonaUtil {
         createSkillParticles(target, ParticleTypes.ENCHANTED_HIT);
         createSkillParticles(player, ParticleTypes.FIREWORK);
 
-        player.getServerWorld().playSound(null, player.getBlockPos(), PersonaSounds.ATTACK, SoundCategory.PLAYERS, 1.0f, 1.0f);
+        player.getServerWorld().playSound(null, player.getBlockPos(), selected.useSound(), SoundCategory.PLAYERS, 1.0f, 1.0f);
 
         createCooldown(player, selected.cooldown());
 

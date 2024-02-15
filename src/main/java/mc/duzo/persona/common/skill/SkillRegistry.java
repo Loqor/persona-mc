@@ -1,6 +1,7 @@
 package mc.duzo.persona.common.skill;
 
 import mc.duzo.persona.PersonaMod;
+import mc.duzo.persona.common.PersonaSounds;
 import mc.duzo.persona.util.VelvetUtil;
 import mc.duzo.persona.util.WorldUtil;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
@@ -33,7 +34,8 @@ public class SkillRegistry {
             (source, persona, target) -> target.setHealth(target.getHealth() + 4),
             false,
             3,
-            1
+            1,
+            PersonaSounds.DIA
     ));
     public static Skill CLEAVE = register(Skill.create(
             new Identifier(PersonaMod.MOD_ID, "cleave"),
