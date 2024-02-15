@@ -21,7 +21,7 @@ public class PersonaClientMessages {
 
     private static void recieveVelvetChange(boolean entry) {
         if (entry) {
-            PersonaModClient.sounds.startIfNotPlaying(new PlayerFollowingLoopingSound(PersonaSounds.VELVET_MUSIC, SoundCategory.MUSIC));
+            PersonaModClient.sounds.startSound(new PlayerFollowingLoopingSound(PersonaSounds.VELVET_MUSIC, SoundCategory.MUSIC));
             return;
         }
 
