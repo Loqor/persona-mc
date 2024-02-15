@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import mc.duzo.persona.PersonaMod;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
+import mc.duzo.persona.network.PersonaMessages;
 import mc.duzo.persona.util.VelvetUtil;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,6 +31,8 @@ public final class SetSPCommand {
 
         PlayerData playerData = ServerData.getPlayerState(player);
         playerData.setSp(PlayerData.MAX_SP);
+        ServerData.getServerState(context.getSource().getServer()).markDirty();
+        PersonaMessages.syncData(player, player);
 
         return Command.SINGLE_SUCCESS;
     }

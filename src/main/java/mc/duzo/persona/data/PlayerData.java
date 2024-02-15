@@ -8,6 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class PlayerData {
             ServerData.getServerState(target.getServer()).markDirty();
         }
     }
-    public Optional<LivingEntity> findTarget(ServerWorld world) {
+    public Optional<LivingEntity> findTarget(World world) {
         if (!this.hasTarget) return Optional.empty();
 
         Entity target = world.getEntityById(this.target);
