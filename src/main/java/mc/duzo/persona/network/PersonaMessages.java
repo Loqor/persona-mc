@@ -87,6 +87,8 @@ public class PersonaMessages {
         }
 
         data.setTarget(target);
+
+        syncData(player, player);
     }
 
     private static void recieveSkillChangeRequest(ServerPlayerEntity player, boolean next) {
