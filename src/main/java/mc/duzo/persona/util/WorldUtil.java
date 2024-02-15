@@ -1,9 +1,6 @@
 package mc.duzo.persona.util;
 
 import mc.duzo.persona.PersonaMod;
-import mc.duzo.persona.common.PersonaDimensions;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.s2c.play.EntityStatusEffectS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
@@ -13,8 +10,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.WorldSavePath;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -27,7 +22,7 @@ import java.util.Set;
  * */
 public class WorldUtil {
     public static MinecraftServer getServer() {
-        return PersonaMod.server;
+        return PersonaMod.SERVER;
     }
 
     public static ServerWorld findWorld(RegistryKey<World> key) {
@@ -44,7 +39,7 @@ public class WorldUtil {
 
     public static void teleport(LivingEntity entity, ServerWorld target, Vec3d pos, float yaw, float pitch) {
         if (entity instanceof ServerPlayerEntity player) {
-            WorldUtil.teleportToWorld(player, target, pos, player.getYaw(), player.getPitch());
+            target.getServer().execute(() -> WorldUtil.teleportToWorld(player, target, pos, player.getYaw(), player.getPitch()));
             return;
         }
 

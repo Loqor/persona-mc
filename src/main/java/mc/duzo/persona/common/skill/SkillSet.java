@@ -10,14 +10,21 @@ public class SkillSet {
     public static final int MAX_SKILLS = 8;
 
     private final List<Skill> skills = new ArrayList<>();
-    private int selected = 0;
-
+    private Identifier selected;
     public SkillSet(Skill... skills) {
         if (skills.length > MAX_SKILLS) {
             throw new IllegalArgumentException("Cannot have more than " + MAX_SKILLS + " skills");
         }
 
         this.skills.addAll(List.of(skills));
+    }
+
+    @Override
+    public String toString() {
+        return "SkillSet{" +
+                "skills=" + skills +
+                ", selected=" + selected +
+                '}';
     }
 
     public void addSkill(Skill skill) {
@@ -46,24 +53,27 @@ public class SkillSet {
         return skills.size() >= MAX_SKILLS;
     }
 
-    public Skill selected() {
-        if (selected > skills.size() - 1) {
-            selected = skills.size();
-        }
+    private int selectedPosition() {
+        return this.skills.indexOf(this.selected());
+    }
 
-        return skills.get(selected);
+    public Skill selected() {
+        return this.skills.stream().filter(skill -> skill.id().equals(selected)).findFirst().orElse(this.skills.get(0));
     }
     public void selectNext() {
-        selected = (selected + 1 >= skills.size()) ? 0 : selected + 1;
+        selected = skills.get((selectedPosition() + 1 >= skills.size()) ? 0 : selectedPosition() + 1).id();
     }
     public void selectPrevious() {
-        selected = (selected - 1 < 0) ? skills.size() - 1 : selected - 1;
+        selected = skills.get((selectedPosition() - 1 < 0) ? skills.size() - 1 : selectedPosition() - 1).id();
     }
     public void setSelected(int selected) {
         if (selected > skills.size() - 1) {
             selected = skills.size();
         }
 
+        this.selected = skills.get(selected).id();
+    }
+    public void setSelected(Identifier selected) {
         this.selected = selected;
     }
 
@@ -76,7 +86,7 @@ public class SkillSet {
         }
 
         nbt.put("skills", skillData);
-        nbt.putInt("Selected", this.selected);
+        nbt.putString("Selected", this.selected().id().toString());
 
         return nbt;
     }
@@ -86,15 +96,15 @@ public class SkillSet {
 
         NbtCompound skillData = nbt.getCompound("skills");
 
-        skillData.getKeys().forEach(key -> {
+        for (String key : skillData.getKeys()) {
             Skill skill = Skill.fromNbt(skillData.getCompound(key));
 
-            if (skill == null) return;
+            if (skill == null) continue;
 
             this.skills.add(skill);
-        });
+        }
 
-        this.setSelected(nbt.getInt("Selected"));
+        this.setSelected(new Identifier(nbt.getString("Selected")));
 
         return this;
     }

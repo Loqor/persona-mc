@@ -1,13 +1,17 @@
 package mc.duzo.persona.util;
 
+import mc.duzo.persona.common.PersonaSounds;
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.common.skill.Skill;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
+import mc.duzo.persona.network.PersonaMessages;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Math;
 
@@ -18,6 +22,7 @@ public class PersonaUtil {
         PlayerData data = ServerData.getPlayerState(player);
 
         if (data.findPersona().isEmpty()) return;
+        if (!data.isPersonaRevealed()) return;
 
         TargetingUtil.verifyTarget(player);
 
@@ -32,14 +37,42 @@ public class PersonaUtil {
         Skill selected = persona.skills().selected();
 
         selected.run(player, persona, target);
-        createSkillParticles(target);
+
+        createSkillParticles(target, ParticleTypes.ENCHANTED_HIT);
+        createSkillParticles(player, ParticleTypes.FIREWORK);
+
+        player.getServerWorld().playSound(null, player.getBlockPos(), PersonaSounds.ATTACK, SoundCategory.PLAYERS, 1.0f, 1.0f);
 
         createCooldown(player, selected.cooldown());
 
         // If its dead now give them SP
         if (!target.isAlive()) {
             data.addSP((int) (target.getMaxHealth() * 0.1));
+
+            ServerData.getServerState(player.getServer()).markDirty();
+            PersonaMessages.syncData(player, player);
         }
+    }
+
+    public static void reveal(ServerPlayerEntity player) {
+        PlayerData data = ServerData.getPlayerState(player);
+
+        data.revealPersona();
+
+        if (data.findPersona().isEmpty()) return;
+
+        player.getServerWorld().playSound(null, player.getBlockPos(), data.findPersona().get().getSummonSound(), SoundCategory.PLAYERS, 1.0f, 1.0f);
+
+        ServerData.getServerState(player.getServer()).markDirty();
+        PersonaMessages.syncData(player, player);
+    }
+    public static void hide(ServerPlayerEntity player) {
+        PlayerData data = ServerData.getPlayerState(player);
+
+        data.hidePersona();
+
+        ServerData.getServerState(player.getServer()).markDirty();
+        PersonaMessages.syncData(player, player);
     }
 
     public static void createCooldown(ServerPlayerEntity player, double seconds) {
@@ -62,7 +95,7 @@ public class PersonaUtil {
     /**
      * Creates a spiral of particles around a target
      */
-    public static void createSkillParticles(LivingEntity target) {
+    public static <T extends ParticleEffect> void createSkillParticles(LivingEntity target, T particle) {
         double b = Math.PI / 8;
 
         if (target.getWorld().isClient()) return;
@@ -82,7 +115,7 @@ public class PersonaUtil {
                 z = 0.4D * (Math.PI * 2 - t) * 0.5D * Math.sin(t + b + i * Math.PI);
                 pos = source.add(x, y, z);
 
-                world.spawnParticles(ParticleTypes.ENCHANTED_HIT, pos.getX(), pos.getY(), pos.getZ(), 1, 0.0D, 0.0D, 0.0D, 0.0D);
+                world.spawnParticles(particle, pos.getX(), pos.getY(), pos.getZ(), 1, 0.0D, 0.0D, 0.0D, 0.0D);
             }
         }
     }

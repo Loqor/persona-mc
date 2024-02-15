@@ -1,6 +1,5 @@
 package mc.duzo.persona;
 
-import mc.duzo.persona.client.PersonaModClient;
 import mc.duzo.persona.commands.Commands;
 import mc.duzo.persona.common.PersonaSounds;
 import mc.duzo.persona.common.persona.PersonaRegistry;
@@ -14,11 +13,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,7 +27,7 @@ public class PersonaMod implements ModInitializer {
 	public static final String MOD_ID = "persona";
     public static final Logger LOGGER = LoggerFactory.getLogger("persona");
 
-	public static MinecraftServer server;
+	public static MinecraftServer SERVER;
 
 	@Override
 	public void onInitialize() {
@@ -49,6 +46,7 @@ public class PersonaMod implements ModInitializer {
 
 			data.addSP(PlayerData.MAX_SP);
 			ServerData.getServerState(player.getServer()).markDirty();
+			PersonaMessages.syncData(player, player);
 		});
 
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, killer, victim) -> {
@@ -57,6 +55,8 @@ public class PersonaMod implements ModInitializer {
 			PlayerData data = ServerData.getPlayerState((ServerPlayerEntity) killer);
 
 			data.addSP((int) (victim.getMaxHealth() * 0.1f));
+			ServerData.getServerState(killer.getServer()).markDirty();
+			PersonaMessages.syncData((ServerPlayerEntity) killer, (ServerPlayerEntity) killer);
 		});
 
 		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register((old, entity, origin, destination) -> {
@@ -92,22 +92,22 @@ public class PersonaMod implements ModInitializer {
 			ServerData.getPlayerState(player).setPersona(PersonaRegistry.DEV, server);
 		}));
 
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> PersonaMod.server = server);
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> PersonaMod.server = null);
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> PersonaMod.SERVER = server);
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> PersonaMod.SERVER = null);
 		ServerWorldEvents.UNLOAD.register((server, world) -> {
 			if (world.getRegistryKey() == World.OVERWORLD) {
-				PersonaMod.server = null;
+				PersonaMod.SERVER = null;
 			}
 		});
 
 		ServerWorldEvents.LOAD.register((server, world) -> {
 			if (world.getRegistryKey() == World.OVERWORLD) {
-				PersonaMod.server = server;
+				PersonaMod.SERVER = server;
 			}
 		});
 	}
 
 	public static boolean hasServer() {
-		return server != null;
+		return SERVER != null;
 	}
 }

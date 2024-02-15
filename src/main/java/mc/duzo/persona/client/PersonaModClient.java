@@ -1,5 +1,6 @@
 package mc.duzo.persona.client;
 
+import mc.duzo.persona.client.hud.SPHudOverlay;
 import mc.duzo.persona.client.network.PersonaClientMessages;
 import mc.duzo.persona.client.sound.PlayerFollowingLoopingSound;
 import mc.duzo.persona.client.sound.SoundsManager;
@@ -11,6 +12,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -22,6 +24,8 @@ public class PersonaModClient implements ClientModInitializer {
     public void onInitializeClient() {
         PersonaClientMessages.initialise();
         Keybinds.initialise();
+
+        HudRenderCallback.EVENT.register(new SPHudOverlay());
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 

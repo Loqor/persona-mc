@@ -11,6 +11,7 @@
   "client": [
     "client.ClientPlayerInteractionManagerMixin",
     "client.MusicMixin",
+    "client.PlayerEntityRendererMixin",
     "client.SkyboxMixin"
   ]
 }

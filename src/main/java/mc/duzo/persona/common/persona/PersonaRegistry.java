@@ -1,6 +1,7 @@
 package mc.duzo.persona.common.persona;
 
 import mc.duzo.persona.PersonaMod;
+import mc.duzo.persona.common.PersonaSounds;
 import mc.duzo.persona.common.skill.Skill;
 import mc.duzo.persona.common.skill.SkillRegistry;
 import mc.duzo.persona.common.skill.SkillSet;
@@ -25,6 +26,17 @@ public class PersonaRegistry {
     public static Persona DEV;
 
     public static void init() {
-        DEV = register(new Persona(new Identifier(PersonaMod.MOD_ID, "dev"), new SkillSet(SkillRegistry.DIA, SkillRegistry.CLEAVE, SkillRegistry.ZIO)));
+        DEV = register(Persona.create(
+                new Identifier(PersonaMod.MOD_ID, "dev"),
+                new SkillSet(
+                        SkillRegistry.DIA,
+                        SkillRegistry.CLEAVE,
+                        SkillRegistry.ZIO,
+                        SkillRegistry.TRAFURI,
+                        SkillRegistry.VELVET
+                ),
+                new Identifier(PersonaMod.MOD_ID, "textures/skins/arsene.png"), // TODO - ask for permission (https://www.planetminecraft.com/member/magpied/) / ask for them to make more / ask for one of my texture friends to make some
+                PersonaSounds.ARSENE_SHOUT
+        ));
     }
 }

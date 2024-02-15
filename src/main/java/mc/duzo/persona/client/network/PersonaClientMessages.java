@@ -60,4 +60,8 @@ public class PersonaClientMessages {
     public static void sendUseSkillRequest() {
         ClientPlayNetworking.send(PersonaMessages.USE_SKILL, PacketByteBufs.empty());
     }
+
+    public static void sendPersonaToggleRequest() {
+        ClientPlayNetworking.send(PersonaMessages.PERSONA_TOGGLE, PacketByteBufs.empty());
+    }
 }

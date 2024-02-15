@@ -1,6 +1,7 @@
 package mc.duzo.persona.network;
 
 import mc.duzo.persona.PersonaMod;
+import mc.duzo.persona.client.network.PersonaClientMessages;
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
@@ -26,6 +27,9 @@ public class PersonaMessages {
     public static final Identifier CHANGE_SKILL = new Identifier(PersonaMod.MOD_ID, "change_skill");
     public static final Identifier USE_SKILL = new Identifier(PersonaMod.MOD_ID, "use_skill");
 
+    // Personas
+    public static final Identifier PERSONA_TOGGLE = new Identifier(PersonaMod.MOD_ID, "persona_toggle");
+
     // Velvet Room
     public static final Identifier CHANGED_VELVET = new Identifier(PersonaMod.MOD_ID, "changed_velvet");
 
@@ -34,6 +38,7 @@ public class PersonaMessages {
         ServerPlayNetworking.registerGlobalReceiver(CHANGE_SKILL, ((server, player, handler, buf, responseSender) -> recieveSkillChangeRequest(player, buf)));
         ServerPlayNetworking.registerGlobalReceiver(USE_SKILL, ((server, player, handler, buf, responseSender) -> recieveUseSkillRequest(player)));
         ServerPlayNetworking.registerGlobalReceiver(ASK_DATA, ((server, player, handler, buf, responseSender) -> recieveDataRequest(player, buf)));
+        ServerPlayNetworking.registerGlobalReceiver(PERSONA_TOGGLE, ((server, player, handler, buf, responseSender) -> recievePersonaToggleRequest(player)));
     }
 
     public static void sendVelvetChange(ServerPlayerEntity player, boolean entry) {
@@ -97,7 +102,8 @@ public class PersonaMessages {
             persona.skills().selectPrevious();
         }
 
-        player.sendMessage(persona.skills().selected().name());
+        ServerData.getServerState(player.getServer()).markDirty();
+        PersonaMessages.syncData(player, player);
     }
     private static void recieveSkillChangeRequest(ServerPlayerEntity player, PacketByteBuf buf) {
         boolean next = buf.readBoolean();
@@ -114,5 +120,16 @@ public class PersonaMessages {
     private static void recieveDataRequest(ServerPlayerEntity player, PacketByteBuf buf) {
         UUID uuid = buf.readUuid();
         recieveDataRequest(player, uuid);
+    }
+
+    private static void recievePersonaToggleRequest(ServerPlayerEntity player) {
+        PlayerData data = ServerData.getPlayerState(player);
+
+        if (data.isPersonaRevealed()) {
+            PersonaUtil.hide(player);
+            return;
+        }
+
+        PersonaUtil.reveal(player);
     }
 }

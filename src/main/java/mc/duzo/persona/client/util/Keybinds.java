@@ -22,6 +22,10 @@ public class Keybinds {
     private static KeyBinding useSkillKey;
     private static boolean wasUseSkillHeld;
 
+    private static KeyBinding toggleKey;
+    private static boolean wasToggleHeld;
+
+
     public static void initialise() {
         targetingKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key." + PersonaMod.MOD_ID + ".target",
@@ -51,6 +55,13 @@ public class Keybinds {
                 "category." + PersonaMod.MOD_ID
         ));
 
+        toggleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key." + PersonaMod.MOD_ID + ".toggle_persona",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_C,
+                "category." + PersonaMod.MOD_ID
+        ));
+
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             ClientPlayerEntity player = client.player;
@@ -60,6 +71,7 @@ public class Keybinds {
             tickNextSkillKey(player);
             tickPreviousSkillKey(player);
             tickUseSkillKey(player);
+            tickToggleKey(player);
         });
     }
 
@@ -116,5 +128,19 @@ public class Keybinds {
         wasUseSkillHeld = true;
 
         PersonaClientMessages.sendUseSkillRequest();
+    }
+
+    private static void tickToggleKey(ClientPlayerEntity player) {
+        if (!toggleKey.wasPressed()) {
+            if (wasToggleHeld)
+                wasToggleHeld = false;
+            return;
+        }
+
+        if (wasToggleHeld) return;
+
+        wasToggleHeld = true;
+
+        PersonaClientMessages.sendPersonaToggleRequest();
     }
 }

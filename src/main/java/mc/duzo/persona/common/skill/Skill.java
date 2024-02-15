@@ -3,6 +3,7 @@ package mc.duzo.persona.common.skill;
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
+import mc.duzo.persona.network.PersonaMessages;
 import mc.duzo.persona.util.Identifiable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -17,6 +18,13 @@ public abstract class Skill implements Identifiable {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "Skill{" +
+                "id=" + id +
+                '}';
+    }
+
     public void run(ServerPlayerEntity source, Persona persona, LivingEntity target) {
         PlayerData data = ServerData.getPlayerState(source);
 
@@ -26,8 +34,9 @@ public abstract class Skill implements Identifiable {
         }
 
         data.removeSP(this.cost());
+
         ServerData.getServerState(source.getServer()).markDirty();
-        source.sendMessage(Text.literal(data.spiritPoints() + " SP remaining"), false);
+        PersonaMessages.syncData(source, source);
     }
 
     public Text name() {
