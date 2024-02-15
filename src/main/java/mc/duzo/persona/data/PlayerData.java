@@ -74,6 +74,14 @@ public class PlayerData {
         return Optional.of((LivingEntity) target);
     }
 
+    public boolean hasTarget() {
+        return hasTarget;
+    }
+
+    public int getTargetId() {
+        return target;
+    }
+
     public int spiritPoints() {
         return this.spiritPoints;
     }
@@ -82,6 +90,10 @@ public class PlayerData {
     }
     public void addSP(int amount) {
         this.spiritPoints = Math.min(MAX_SP, this.spiritPoints + amount);
+    }
+
+    public void setSp(int amount) {
+        this.spiritPoints = Math.min(MAX_SP, amount);
     }
     public boolean hasEnoughSP(int amount) {
         return this.spiritPoints >= amount;
@@ -110,6 +122,8 @@ public class PlayerData {
 
         nbt.putInt("SP", this.spiritPoints());
         nbt.putBoolean("PersonaRevealed", this.isPersonaRevealed());
+        nbt.putBoolean("hasTarget", this.hasTarget());
+        nbt.putInt("targetId", this.getTargetId());
 
         return nbt;
     }
@@ -125,6 +139,12 @@ public class PlayerData {
 
         if (nbt.contains("PersonaRevealed"))
             data.personaRevealed = nbt.getBoolean("PersonaRevealed");
+
+        if(nbt.contains("hasTarget"))
+            data.hasTarget = nbt.getBoolean("hasTarget");
+
+        if(nbt.contains("targetId"))
+            data.target = nbt.getInt("targetId");
 
         return data;
     }
