@@ -1,5 +1,6 @@
 package mc.duzo.persona.mixin.client;
 
+import mc.duzo.persona.client.feature.MaskFeatureRenderer;
 import mc.duzo.persona.client.feature.PersonaFeatureRenderer;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -23,5 +24,6 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
         PlayerEntityRenderer renderer = (PlayerEntityRenderer) (Object) this;
 
         this.addFeature(new PersonaFeatureRenderer<>(renderer, ctx.getModelLoader()));
+        this.addFeature(new MaskFeatureRenderer<>(renderer, ctx.getModelLoader()));
     }
 }
