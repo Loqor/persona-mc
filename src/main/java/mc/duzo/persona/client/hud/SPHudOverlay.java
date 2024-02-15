@@ -9,13 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,13 +17,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-
-import java.awt.*;
 
 public class SPHudOverlay implements HudRenderCallback {
 
@@ -48,6 +39,9 @@ public class SPHudOverlay implements HudRenderCallback {
         int width = mc.getWindow().getScaledWidth();
         int height = mc.getWindow().getScaledHeight();
 
+        int realWidth = mc.getWindow().getWidth();
+        int realHeight = mc.getWindow().getHeight();
+
         x = width / 2;
         y = height;
 
@@ -58,15 +52,21 @@ public class SPHudOverlay implements HudRenderCallback {
 
         String spText =  data.spiritPoints() < 100 ? data.spiritPoints() < 10 ? "00" + data.spiritPoints() : "0" + data.spiritPoints() : "" + data.spiritPoints();
 
-        draw.drawTexture(SP_HUD, width - 362, 0,0,0,(int) (227 / 1.25f),(int) (101 / 1.25f), (int) (227 / 1.25f), (int) (324 / 1.25f));
-        draw.drawTexture(SP_HUD, width - 181, 19,0,130,(int) (227 / 1.25f),(int) (101 / 1.25f), (int) (227 / 1.25f), (int) (324 / 1.25f));
+        MatrixStack stack = draw.getMatrices();
+
+        stack.push();
+//        stack.scale(realWidth / 1920f, realHeight / 1080f, 1f);
+
+        draw.drawTexture(SP_HUD, width - getScaled(362f, 1920, realWidth), 0,0,0, getScaled((227 / 1.25f), 1920, realWidth),(int) getScaled((101 / 1.25f), 1080, realHeight), (int) getScaled((227 / 1.25f), 1920, realWidth), (int) getScaled((324 / 1.25f), 1080, realHeight));
+        draw.drawTexture(SP_HUD, width - getScaled(181f, 1920, realWidth), getScaled(19f, 1080, realHeight),0,getScaled(130f, 1080, realHeight),getScaled((227 / 1.25f), 1920, realWidth),(int) getScaled((101 / 1.25f), 1080, realHeight), (int) getScaled((227 / 1.25f), 1920, realWidth), (int) getScaled((324 / 1.25f), 1080, realHeight));
         if(data.spiritPoints() > 100) {
             // @TODO this is temporary and it sucks so
+            // TODO - scaling for whatever this is
             draw.drawTexture(SP_HUD, (width - 337) + 22, (54) - 18, 25, 95, (int) (195 / 1.25f), (int) (43 / 1.25f), (int) (227 / 1.25f), (int) (324 / 1.25f));
             draw.drawTexture(SP_HUD, (width - 181) + 22, (72) - 18, 0, 224, (int) (195 / 1.25f), (int) (43 / 1.25f), (int) (227 / 1.25f), (int) (324 / 1.25f));
         }
 
-        MatrixStack stack = draw.getMatrices();
+
 
         if(data.hasTarget()) {
             if (mc.world.getEntityById(data.getTargetId()) != null) {
@@ -77,21 +77,21 @@ public class SPHudOverlay implements HudRenderCallback {
                 int smt = mc.textRenderer.getWidth(name) / 2;
                 int sizeofnumber = mc.textRenderer.getWidth(level) /2;
                 int smt2 = mc.textRenderer.getWidth(randomcapital) / 2;
-                stack.translate(240, 47, 0);
-                stack.scale(2.7f, 2.7f, 1);
+                stack.translate(getScaled(240, 1920, realWidth), getScaled(47, 1080, realHeight), 0);
+                stack.scale(getScaled(2.7f, 1920, realWidth), getScaled(2.7f, 1080, realHeight), 1);
                 stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(4.5f));
                 draw.drawText(mc.textRenderer, name, -smt, 0, 0xFFFFFF, true);
                 stack.push();
-                stack.translate(-68, 1, 0);
-                draw.drawText(mc.textRenderer, level, -sizeofnumber, 0, 0xFFFFFF, true);
+                stack.translate(getScaled(-90, 1920, realWidth), getScaled(1, 1080, realHeight), 0);
+                draw.drawText(mc.textRenderer, level, getScaled(-sizeofnumber, 1920, realWidth), 0, 0xFFFFFF, true);
                 stack.pop();
                 stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(3f));
-                mc.textRenderer.draw(randomcapital, -smt -smt2-5, -1, 0, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, Colors.WHITE, 0xF000F0, false);
+                mc.textRenderer.draw(randomcapital, -smt -smt2 + getScaled(-5, 1920, realWidth), getScaled(-1, 1080, realHeight), 0, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, Colors.WHITE, 0xF000F0, false);
                 stack.translate(0, 0, 20);
-                mc.textRenderer.draw(randomcapital, -smt -smt2-4, -1, Colors.BLACK, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 0xF000F0, false);
+                mc.textRenderer.draw(randomcapital, -smt -smt2 + getScaled(-4, 1920, realWidth), getScaled(-1, 1080, realHeight), Colors.BLACK, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 0xF000F0, false);
                 stack.pop();
             }
-            draw.drawTexture(TARGET, 0, 0, 0, 0, 436, 99, 436, 99);
+            draw.drawTexture(TARGET, 0, 0, 0, 0, getScaled(436, 1920, realWidth), getScaled(99, 1080, realHeight), getScaled(436, 1920, realWidth), getScaled(99, 1080, realHeight));
         }
 
 
@@ -124,6 +124,7 @@ public class SPHudOverlay implements HudRenderCallback {
         stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(5f));
         mc.textRenderer.draw(skillHighlight, -stw -stw2-5, -9, 0, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.POLYGON_OFFSET, Colors.WHITE, 0xF000F0, false);
         mc.textRenderer.draw(skillHighlight, -stw -stw2-4, -9, Colors.BLACK, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 0xF000F0, false);
+        stack.pop();
         stack.pop();
 
         //draw.drawText(mc.textRenderer, skillText , (x - (skillWidth)) - 94, y - 20, 0xFFFFFF, true);
@@ -176,5 +177,16 @@ public class SPHudOverlay implements HudRenderCallback {
         //this.buffer.draw(this.buffer.textureWidth, this.buffer.textureHeight, true);
         context.getMatrices().pop();
         DiffuseLighting.enableGuiDepthLighting();
+    }
+
+    /**
+     * Returns a scaled value.
+     * @param value the current value you are using
+     * @param own your own screen dimension
+     * @param dimension the current screen dimension
+     * @return the scaled value
+     */
+    private static int getScaled(float value, int own, int dimension) {
+        return (int) ((value / own) * dimension);
     }
 }
