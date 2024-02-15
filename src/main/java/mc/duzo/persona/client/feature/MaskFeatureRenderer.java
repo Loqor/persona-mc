@@ -27,7 +27,6 @@ import net.minecraft.util.math.RotationAxis;
  * Might remove - not too sure if I like it.
  * TODO - Idea: Make it an item and this renders if the player has that item on their face.
  *
- *
  * @author duzo
  */
 @Environment(value= EnvType.CLIENT)
