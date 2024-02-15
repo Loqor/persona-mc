@@ -11,5 +11,6 @@ public class Commands {
 
     private static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         EnterRoomCommand.register(dispatcher);
+        SetSPCommand.register(dispatcher);
     }
 }

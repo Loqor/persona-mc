@@ -47,8 +47,8 @@ public class PersonaFeatureRenderer<T extends LivingEntity, M extends EntityMode
 
         this.getContextModel().copyStateTo(this.model);
         this.model.setAngles(livingEntity, f, g, j, k, l);
-        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucent(identifier));
-        this.model.render(matrixStack, vertexConsumer, 0xF000F0, OverlayTexture.DEFAULT_UV, 0.3607843137f, 0.9450980392f, 1, livingEntity.getWorld().random.nextInt(32) != 6 ? 0.4f : 0.05f);
+        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucentEmissive(identifier, true));
+        this.model.render(matrixStack, vertexConsumer, 0xF000F0, OverlayTexture.DEFAULT_UV, 1, 1, 1, livingEntity.getWorld().random.nextInt(32) != 6 ? 0.4f : 0.05f);
         matrixStack.pop();
     }
 }
