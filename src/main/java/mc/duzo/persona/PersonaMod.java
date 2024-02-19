@@ -31,6 +31,8 @@ public class PersonaMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Register.initialize();
+
 		PersonaSounds.init();
 		SkillRegistry.init();
 		PersonaRegistry.init();

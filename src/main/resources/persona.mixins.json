@@ -10,6 +10,7 @@
   },
   "client": [
     "client.ClientPlayerInteractionManagerMixin",
+    "client.HeadFeatureRendererMixin",
     "client.MusicMixin",
     "client.PlayerEntityRendererMixin",
     "client.SkyboxMixin"

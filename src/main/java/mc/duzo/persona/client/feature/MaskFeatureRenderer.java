@@ -1,6 +1,7 @@
 package mc.duzo.persona.client.feature;
 
 import mc.duzo.persona.PersonaMod;
+import mc.duzo.persona.Register;
 import mc.duzo.persona.client.data.ClientData;
 import mc.duzo.persona.data.PlayerData;
 import net.fabricmc.api.EnvType;
@@ -18,6 +19,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
@@ -25,7 +27,6 @@ import net.minecraft.util.math.RotationAxis;
 /**
  * A slightly transparent mask on the players face which shows if they have a persona and its hidden
  * Might remove - not too sure if I like it.
- * TODO - Idea: Make it an item and this renders if the player has that item on their face.
  *
  * @author duzo
  */
@@ -43,6 +44,8 @@ public class MaskFeatureRenderer<T extends LivingEntity, M extends EntityModel<T
 
     @Override
     public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, T livingEntity, float f, float g, float h, float j, float k, float l) {
+        if (livingEntity.getEquippedStack(EquipmentSlot.HEAD).getItem() != Register.JOKER_MASK) return;
+
         PlayerData data = ClientData.getPlayerState(livingEntity);
 
         if (data.isPersonaRevealed() || data.findPersona().isEmpty()) return;
@@ -56,7 +59,7 @@ public class MaskFeatureRenderer<T extends LivingEntity, M extends EntityModel<T
         this.model.sneaking = player.isSneaking();
 
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucent(MASK_TEXTURE));
-        this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1, 1, 1, 0.4f);
+        this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1f);
 
         matrixStack.pop();
     }
