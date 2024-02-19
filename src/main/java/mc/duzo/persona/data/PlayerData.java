@@ -2,12 +2,14 @@ package mc.duzo.persona.data;
 
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.network.PersonaMessages;
+import mc.duzo.persona.util.AbsoluteBlockPos;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +29,7 @@ public class PlayerData {
     private int target;
     private int spiritPoints;
     private boolean personaRevealed;
+    private AbsoluteBlockPos.Directed velvetDoorPos; // the position of the velvet door through which the player entered the velvet room
 
     public Optional<Persona> findPersona() {
         return Optional.ofNullable(this.persona);
@@ -114,6 +117,23 @@ public class PlayerData {
     public void hidePersona() {
         this.personaRevealed = false;
     }
+
+    /**
+     * @return the position of the velvet door that the player entered the room from. Can be null.
+     */
+    @Nullable
+    public AbsoluteBlockPos.Directed getVelvetDoorPos() {
+        return this.velvetDoorPos;
+    }
+
+    /**
+     * Sets the velvet door position
+     * Will not call markdirty, do it yourself.
+     */
+    public void setVelvetDoorPos(AbsoluteBlockPos.Directed pos) {
+        this.velvetDoorPos = pos;
+    }
+
 
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();

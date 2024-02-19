@@ -1,13 +1,14 @@
 package mc.duzo.persona;
 
+import mc.duzo.persona.common.entity.door.VelvetDoorEntity;
 import mc.duzo.persona.common.item.WearableItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ArmorMaterials;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -23,6 +24,13 @@ import net.minecraft.util.Identifier;
 public class Register {
     // Items
     public static final WearableItem JOKER_MASK = register(Registries.ITEM, "joker_mask", new WearableItem(EquipmentSlot.HEAD, true, new FabricItemSettings()));
+
+    // Entities
+
+    public static final EntityType<VelvetDoorEntity> VELVET_DOOR_ENTITY = register(Registries.ENTITY_TYPE, "velvet_door", FabricEntityTypeBuilder.create(
+            SpawnGroup.MISC,
+            (EntityType.EntityFactory<VelvetDoorEntity>) VelvetDoorEntity::new
+    ).fireImmune().dimensions(EntityDimensions.fixed(1f, 2f)).build());
 
     // Initialising & Registering
 

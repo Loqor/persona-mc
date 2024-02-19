@@ -1,18 +1,20 @@
 package mc.duzo.persona.util;
 
 import mc.duzo.persona.PersonaMod;
+import mc.duzo.persona.Register;
 import mc.duzo.persona.common.PersonaDimensions;
 import mc.duzo.persona.common.PersonaSounds;
+import mc.duzo.persona.common.entity.door.VelvetDoorEntity;
 import mc.duzo.persona.data.ServerData;
 import mc.duzo.persona.network.PersonaMessages;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -118,6 +120,19 @@ public class VelvetUtil {
         data.markDirty();
 
         getRoomCentre();
+
+        summonDoor();
+    }
+
+    private static VelvetDoorEntity summonDoor() {
+        BlockPos centre = getRoomCentre();
+
+        // todo improve code - maybe when creating the structure i can place one down and save w entities?
+        BlockPos doorPos = centre.west(3);
+
+        VelvetDoorEntity entity = Register.VELVET_DOOR_ENTITY.spawn(getVelvetDimension(), doorPos, SpawnReason.STRUCTURE);
+
+        return entity;
     }
 
     public static BlockPos getRoomCentre() {

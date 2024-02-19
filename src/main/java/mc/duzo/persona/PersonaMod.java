@@ -23,9 +23,12 @@ import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Random;
+
 public class PersonaMod implements ModInitializer {
 	public static final String MOD_ID = "persona";
     public static final Logger LOGGER = LoggerFactory.getLogger("persona");
+	public static final Random RANDOM = new Random();
 
 	public static MinecraftServer SERVER;
 
