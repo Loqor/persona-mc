@@ -31,6 +31,9 @@ public class SPHudOverlay implements HudRenderCallback {
     public static final Identifier TARGET = new Identifier(PersonaMod.MOD_ID, "textures/gui/target_acquired.png");
     @Override
     public void onHudRender(DrawContext draw, float tickDelta) {
+        // todo major code cleanup here :(
+        // loqor please separate these by new lines + better variable names + comments
+
         int x = 0;
         int y = 0;
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -78,20 +81,19 @@ public class SPHudOverlay implements HudRenderCallback {
                 Text level = Text.literal(String.valueOf(found instanceof PlayerEntity ? ((PlayerEntity) found).getNextLevelExperience() : 2)).formatted(Formatting.ITALIC);
                 stack.push();
                 int nameWidth = mc.textRenderer.getWidth(name) / 2;
-                int levelWidth = mc.textRenderer.getWidth(level) /2;
+                int levelWidth = mc.textRenderer.getWidth(level) / 2;
                 int smt2 = mc.textRenderer.getWidth(firstHighlight) / 2;
                 stack.translate(getScaled(240, 1920, realWidth), getScaled(47, 1080, realHeight), 0);
                 stack.scale(getScaled(2.7f, 1920, realWidth), getScaled(2.7f, 1080, realHeight), 1);
                 stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(4.5f));
                 draw.drawText(mc.textRenderer, name, -nameWidth, 0, 0xFFFFFF, true);
                 stack.push();
-                stack.translate(getScaled(-90, 1920, realWidth), getScaled(1, 1080, realHeight), 0);
-                draw.drawText(mc.textRenderer, level, getScaled(-levelWidth, 1920, realWidth), 0, 0xFFFFFF, true);
+                draw.drawText(mc.textRenderer, level, -levelWidth - 90, 1, 0xFFFFFF, true);
                 stack.pop();
                 stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(3f));
-                mc.textRenderer.draw(firstHighlight, -nameWidth -smt2 + getScaled(-5, 1920, realWidth), getScaled(-1, 1080, realHeight), 0, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, Colors.WHITE, 0xF000F0, false);
+                mc.textRenderer.draw(firstHighlight, -nameWidth -smt2 + -5, getScaled(-1, 1080, realHeight), 0, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, Colors.WHITE, 0xF000F0, false);
                 stack.translate(0, 0, 20);
-                mc.textRenderer.draw(firstHighlight, -nameWidth -smt2 + getScaled(-4, 1920, realWidth), getScaled(-1, 1080, realHeight), Colors.BLACK, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 0xF000F0, false);
+                mc.textRenderer.draw(firstHighlight, -nameWidth -smt2 + -5, getScaled(-1, 1080, realHeight), Colors.BLACK, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 0xF000F0, false);
                 stack.pop();
             }
             draw.drawTexture(TARGET, 0, 0, 0, 0, getScaled(436, 1920, realWidth), getScaled(99, 1080, realHeight), getScaled(436, 1920, realWidth), getScaled(99, 1080, realHeight));
@@ -100,34 +102,41 @@ public class SPHudOverlay implements HudRenderCallback {
 
         stack.push();
         stack.translate(0, 0, -300);
-        draw.drawTexture(CHARACTER_ELEMENT, width - 250, height -180,0,0,(int) (130 * 1.5),(int) (92 * 1.5), (int) (130 * 1.5),(int) (148 * 1.5));
+        draw.drawTexture(CHARACTER_ELEMENT, width - getScaledWidth(250), height - getScaledHeight(180) ,0,0,(int) (getScaledWidth(130 * 1.5f)),getScaledHeight(92 * 1.5f), getScaledWidth(130 * 1.5f),getScaledHeight(148 * 1.5f));
         stack.pop();
 
-        this.drawEntity(draw, width - 200, height + 70, 110, 20, 0f, mc.player, tickDelta);
+        this.drawEntity(draw, width + getScaledWidth(-200), height + getScaledHeight(70), getScaledHeight(110), 20, 0f, mc.player, tickDelta);
 
-        draw.drawTexture(CHARACTER_ELEMENT, width - 202, height - 89,0,(int) (92 * 1.5),(int) (130 * 1.5),(int) (56 * 1.5), (int) (130 * 1.5),(int) (148 * 1.5));
+        draw.drawTexture(CHARACTER_ELEMENT, width + getScaledWidth(- 202), height + getScaledHeight(- 89),0,getScaledHeight(92 * 1.5f),getScaledWidth(130 * 1.5f),getScaledHeight(56 * 1.5f), getScaledWidth(130 * 1.5f),getScaledHeight(148 * 1.5f));
 
         stack.push();
         int scaledTextWidth = mc.textRenderer.getWidth(spText) / 2;
-        stack.translate(width - 270, 15, 0);
-        stack.scale(3.5f, 3.5f, 1);
+        stack.translate(width + getScaledWidth(- 270), getScaledHeight(15), 0);
+        stack.scale(getScaledWidth(3.5f), getScaledHeight(3.5f), 1);
         stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(6.5f));
         draw.drawText(mc.textRenderer, spText, -scaledTextWidth, 0, 0xFFFFFF, false);
         stack.pop();
 
         String skillText = data.findPersona().get().skills().selected().name().getString().substring(1);
         String skillHighlight = data.findPersona().get().skills().selected().name().getString().substring(0, 1).toUpperCase();
+
         stack.push();
+
         int skillTextWidth = (mc.textRenderer.getWidth(skillText) / 2);
         int skillHighlightWidth = (mc.textRenderer.getWidth(skillHighlight) / 2);
-        stack.translate(width - 115, height - 36, 0);
-        stack.scale(3.5f, 3.5f, 1);
+
+        stack.translate(width + getScaledWidth(- 115), height + getScaledHeight(- 36), 0);
+        stack.scale(getScaledWidth(3.5f), getScaledHeight(3.5f), 1);
         stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(12.5f));
-        draw.drawText(mc.textRenderer, skillText, -skillTextWidth, -8, 0xFFFFFF, false);
+
+        draw.drawText(mc.textRenderer, skillText, -skillTextWidth, getScaledHeight(-8), 0xFFFFFF, false);
+
         stack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(5f));
-        mc.textRenderer.draw(skillHighlight, -skillTextWidth -skillHighlightWidth -5, -9, 0, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.POLYGON_OFFSET, Colors.WHITE, 0xF000F0, false);
-        mc.textRenderer.draw(skillHighlight, -skillTextWidth -skillHighlightWidth -4, -9, Colors.BLACK, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 0xF000F0, false);
+        mc.textRenderer.draw(skillHighlight, -skillTextWidth - skillHighlightWidth + -5, getScaledHeight(-9), 0, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.POLYGON_OFFSET, Colors.WHITE, 0xF000F0, false);
+        mc.textRenderer.draw(skillHighlight, -skillTextWidth - skillHighlightWidth + -4, getScaledHeight(-9), Colors.BLACK, false, stack.peek().getPositionMatrix(), draw.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 0xF000F0, false);
+
         stack.pop();
+
         stack.pop();
 
         //draw.drawText(mc.textRenderer, skillText , (x - (skillWidth)) - 94, y - 20, 0xFFFFFF, true);
@@ -191,5 +200,12 @@ public class SPHudOverlay implements HudRenderCallback {
      */
     private static int getScaled(float value, int own, int dimension) {
         return (int) ((value / own) * dimension);
+    }
+
+    private static int getScaledHeight(float value) {
+        return getScaled(value, 1080, MinecraftClient.getInstance().getWindow().getHeight());
+    }
+    private static int getScaledWidth(float value) {
+        return getScaled(value, 1920, MinecraftClient.getInstance().getWindow().getWidth());
     }
 }
