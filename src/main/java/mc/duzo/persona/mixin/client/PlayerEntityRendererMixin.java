@@ -20,7 +20,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void PlayerEntityRenderer(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
+    private void persona$PlayerEntityRenderer(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci) {
         PlayerEntityRenderer renderer = (PlayerEntityRenderer) (Object) this;
 
         this.addFeature(new PersonaFeatureRenderer<>(renderer, ctx.getModelLoader()));

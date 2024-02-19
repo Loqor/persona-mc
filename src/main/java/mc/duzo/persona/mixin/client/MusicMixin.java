@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MusicTracker.class)
 public class MusicMixin {
     @Inject(method = "play", at = @At("HEAD"), cancellable = true)
-    public void persona_removeMusic(MusicSound type, CallbackInfo ci) {
+    public void persona$removeMusic(MusicSound type, CallbackInfo ci) {
         if (MinecraftClient.getInstance().player != null && VelvetUtil.isInVelvetRoom(MinecraftClient.getInstance().player)) {
             ci.cancel();
         }
