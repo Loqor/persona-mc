@@ -2,10 +2,15 @@ package mc.duzo.persona.client.render.model;
 
 import mc.duzo.persona.common.entity.door.VelvetDoorEntity;
 import mc.duzo.persona.common.entity.door.VelvetDoorVariant;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.RotationAxis;
 
 public class P4DoorModel extends VelvetRoomDoorModel {
 	private final ModelPart door;
@@ -74,6 +79,26 @@ public class P4DoorModel extends VelvetRoomDoorModel {
 	@Override
 	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
 		door.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
+	}
+
+	@Override
+	public void render(VelvetDoorEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+		matrices.push();
+		matrices.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(180f));
+		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(entity.getBodyYaw()));
+
+		this.getChild("end_portal").ifPresent(cube -> {
+			if(MinecraftClient.getInstance().player.distanceTo(entity) < 2f) {
+				matrices.push();
+				matrices.scale(1f, 1f, 2f);
+				cube.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEndGateway()), 0xFF00F0, OverlayTexture.DEFAULT_UV, 1f, 1f, 1f, 1f);
+				matrices.pop();
+			}
+		});
+
+		matrices.translate(0f, -1.5f, 0f);
+		this.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySmoothCutout(this.getTexture())), light, OverlayTexture.DEFAULT_UV, 1f, 1f, 1f, 1f);
+		matrices.pop();
 	}
 
 	@Override
