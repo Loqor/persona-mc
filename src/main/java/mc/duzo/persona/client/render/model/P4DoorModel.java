@@ -1,14 +1,15 @@
-package mc.duzo.persona.client.models;
+package mc.duzo.persona.client.render.model;
 
 import mc.duzo.persona.common.entity.door.VelvetDoorEntity;
+import mc.duzo.persona.common.entity.door.VelvetDoorVariant;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class VelvetRoomDoorModel extends SinglePartEntityModel<VelvetDoorEntity> {
+public class P4DoorModel extends VelvetRoomDoorModel {
 	private final ModelPart door;
-	public VelvetRoomDoorModel(ModelPart root) {
+	public P4DoorModel(ModelPart root) {
 		this.door = root.getChild("door");
 	}
 	public static TexturedModelData getTexturedModelData() {
@@ -82,5 +83,10 @@ public class VelvetRoomDoorModel extends SinglePartEntityModel<VelvetDoorEntity>
 
 	@Override
 	public void setAngles(VelvetDoorEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
+	}
+
+	@Override
+	public VelvetDoorVariant getVariant() {
+		return VelvetDoorVariant.FOUR;
 	}
 }
