@@ -90,7 +90,7 @@ public class P4DoorModel extends VelvetDoorModel {
 			if(MinecraftClient.getInstance().player.distanceTo(entity) < 2f) {
 				matrices.push();
 				matrices.scale(1f, 1f, 2f);
-				cube.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEndGateway()), 0xFF00F0, OverlayTexture.DEFAULT_UV, 1f, 1f, 1f, 1f);
+				cube.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEndGateway()), 0xFF00F0, OverlayTexture.DEFAULT_UV, 0f, 0.5f, 1f, 1f);
 				matrices.pop();
 			}
 		});
