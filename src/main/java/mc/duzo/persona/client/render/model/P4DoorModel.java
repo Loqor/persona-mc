@@ -8,11 +8,10 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 
-public class P4DoorModel extends VelvetRoomDoorModel {
+public class P4DoorModel extends VelvetDoorModel {
 	private final ModelPart door;
 	public P4DoorModel(ModelPart root) {
 		this.door = root.getChild("door");
