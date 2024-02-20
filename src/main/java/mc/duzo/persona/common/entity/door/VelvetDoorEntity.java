@@ -20,6 +20,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -146,5 +148,16 @@ public class VelvetDoorEntity extends Entity implements VariantHolder<VelvetDoor
     @Override
     public @NotNull VelvetDoorVariant getVariant() {
         return VelvetDoorVariant.values()[this.dataTracker.get(DATA_VARIANT_ID)];
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (random.nextInt(128) == 0) {
+            BlockPos pos = this.getBlockPos();
+
+            this.getWorld().playSound((double)pos.getX() + 0.5, (double)pos.getY() + 0.5, (double)pos.getZ() + 0.5, SoundEvents.BLOCK_PORTAL_AMBIENT, SoundCategory.BLOCKS, 0.5f, random.nextFloat() * 0.4f + 0.8f, false);
+        }
     }
 }
