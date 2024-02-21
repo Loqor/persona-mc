@@ -53,18 +53,18 @@ public class SkillSet {
         return skills.size() >= MAX_SKILLS;
     }
 
-    private int selectedPosition() {
-        return this.skills.indexOf(this.selected());
+    private int getSelectedPosition() {
+        return this.skills.indexOf(this.getSelected());
     }
 
-    public Skill selected() {
+    public Skill getSelected() {
         return this.skills.stream().filter(skill -> skill.id().equals(selected)).findFirst().orElse(this.skills.get(0));
     }
     public void selectNext() {
-        selected = skills.get((selectedPosition() + 1 >= skills.size()) ? 0 : selectedPosition() + 1).id();
+        selected = skills.get((getSelectedPosition() + 1 >= skills.size()) ? 0 : getSelectedPosition() + 1).id();
     }
     public void selectPrevious() {
-        selected = skills.get((selectedPosition() - 1 < 0) ? skills.size() - 1 : selectedPosition() - 1).id();
+        selected = skills.get((getSelectedPosition() - 1 < 0) ? skills.size() - 1 : getSelectedPosition() - 1).id();
     }
     public void setSelected(int selected) {
         if (selected > skills.size() - 1) {
@@ -86,7 +86,7 @@ public class SkillSet {
         }
 
         nbt.put("skills", skillData);
-        nbt.putString("Selected", this.selected().id().toString());
+        nbt.putString("Selected", this.getSelected().id().toString());
 
         return nbt;
     }

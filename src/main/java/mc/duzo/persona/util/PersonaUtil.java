@@ -1,6 +1,5 @@
 package mc.duzo.persona.util;
 
-import mc.duzo.persona.common.PersonaSounds;
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.common.skill.Skill;
 import mc.duzo.persona.data.PlayerData;
@@ -31,19 +30,19 @@ public class PersonaUtil {
 
         if (foundTarget.isEmpty()) return;
 
-        if (!canUseSkill(player, persona.skills().selected())) return;
+        if (!canUseSkill(player, persona.getSkillSet().getSelected())) return;
 
         LivingEntity target = foundTarget.get();
-        Skill selected = persona.skills().selected();
+        Skill selected = persona.getSkillSet().getSelected();
 
         selected.run(player, persona, target);
 
         createSkillParticles(target, ParticleTypes.ENCHANTED_HIT);
         createSkillParticles(player, ParticleTypes.FIREWORK);
 
-        player.getServerWorld().playSound(null, player.getBlockPos(), selected.useSound(), SoundCategory.PLAYERS, 1.0f, 1.0f);
+        player.getServerWorld().playSound(null, player.getBlockPos(), selected.getUseSound(), SoundCategory.PLAYERS, 1.0f, 1.0f);
 
-        createCooldown(player, selected.cooldown());
+        createCooldown(player, selected.getCooldown());
 
         // If its dead now give them SP
         if (!target.isAlive()) {
@@ -54,7 +53,7 @@ public class PersonaUtil {
         }
     }
 
-    public static void reveal(ServerPlayerEntity player) {
+    public static void revealPersona(ServerPlayerEntity player) {
         PlayerData data = ServerData.getPlayerState(player);
 
         data.revealPersona();
@@ -66,7 +65,7 @@ public class PersonaUtil {
         ServerData.getServerState(player.getServer()).markDirty();
         PersonaMessages.syncData(player, player);
     }
-    public static void hide(ServerPlayerEntity player) {
+    public static void hidePersona(ServerPlayerEntity player) {
         PlayerData data = ServerData.getPlayerState(player);
 
         data.hidePersona();
@@ -89,7 +88,7 @@ public class PersonaUtil {
 
         if (skill.usesHealth()) return true;
 
-        return data.hasEnoughSP(skill.cost());
+        return data.hasEnoughSP(skill.getCost());
     }
 
     /**

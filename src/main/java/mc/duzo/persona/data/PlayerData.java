@@ -1,15 +1,11 @@
 package mc.duzo.persona.data;
 
 import mc.duzo.persona.common.persona.Persona;
-import mc.duzo.persona.network.PersonaMessages;
 import mc.duzo.persona.util.AbsoluteBlockPos;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,7 +82,7 @@ public class PlayerData {
         return target;
     }
 
-    public int spiritPoints() {
+    public int getSP() {
         return this.spiritPoints;
     }
     public void removeSP(int amount) {
@@ -96,7 +92,7 @@ public class PlayerData {
         this.spiritPoints = Math.min(MAX_SP, this.spiritPoints + amount);
     }
 
-    public void setSp(int amount) {
+    public void setSP(int amount) {
         this.spiritPoints = Math.min(MAX_SP, amount);
     }
     public boolean hasEnoughSP(int amount) {
@@ -141,7 +137,7 @@ public class PlayerData {
         if (this.findPersona().isPresent())
             nbt.put("persona", this.persona.toNbt());
 
-        nbt.putInt("SP", this.spiritPoints());
+        nbt.putInt("SP", this.getSP());
         nbt.putBoolean("PersonaRevealed", this.isPersonaRevealed());
         nbt.putBoolean("hasTarget", this.hasTarget());
         nbt.putInt("targetId", this.getTargetId());

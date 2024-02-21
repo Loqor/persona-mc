@@ -55,11 +55,11 @@ public class Persona implements Identifiable {
         return this.id;
     }
 
-    public SkillSet skills() {
+    public SkillSet getSkillSet() {
         return this.skills;
     }
 
-    public int level() {
+    public int getLevel() {
         return this.level;
     }
 

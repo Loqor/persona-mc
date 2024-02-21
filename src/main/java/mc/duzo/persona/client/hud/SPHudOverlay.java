@@ -11,7 +11,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
@@ -54,7 +53,7 @@ public class SPHudOverlay implements HudRenderCallback {
         if (!data.isPersonaRevealed()) return;
         if (data.findPersona().isEmpty()) return;
 
-        String spText =  data.spiritPoints() < 100 ? data.spiritPoints() < 10 ? "00" + data.spiritPoints() : "0" + data.spiritPoints() : "" + data.spiritPoints();
+        String spText =  data.getSP() < 100 ? data.getSP() < 10 ? "00" + data.getSP() : "0" + data.getSP() : "" + data.getSP();
 
         MatrixStack stack = draw.getMatrices();
 
@@ -63,7 +62,7 @@ public class SPHudOverlay implements HudRenderCallback {
 
         draw.drawTexture(SP_HUD, width - getScaled(362f, 1920, realWidth), 0,0,0, getScaled((227 / 1.25f), 1920, realWidth),(int) getScaled((101 / 1.25f), 1080, realHeight), (int) getScaled((227 / 1.25f), 1920, realWidth), (int) getScaled((324 / 1.25f), 1080, realHeight));
         draw.drawTexture(SP_HUD, width - getScaled(181f, 1920, realWidth), getScaled(19f, 1080, realHeight),0,getScaled(130f, 1080, realHeight),getScaled((227 / 1.25f), 1920, realWidth),(int) getScaled((101 / 1.25f), 1080, realHeight), (int) getScaled((227 / 1.25f), 1920, realWidth), (int) getScaled((324 / 1.25f), 1080, realHeight));
-        if(data.spiritPoints() > 100) {
+        if(data.getSP() > 100) {
             // @TODO this is temporary and it sucks so
             // TODO - scaling for whatever this is
             // its the bar that covers the SP blue bar, i just made it not render because yeah im lazy and didnt feel like making it move just yet
@@ -117,8 +116,8 @@ public class SPHudOverlay implements HudRenderCallback {
         draw.drawText(mc.textRenderer, spText, -scaledTextWidth, 0, 0xFFFFFF, false);
         stack.pop();
 
-        String skillText = data.findPersona().get().skills().selected().name().getString().substring(1);
-        String skillHighlight = data.findPersona().get().skills().selected().name().getString().substring(0, 1).toUpperCase();
+        String skillText = data.findPersona().get().getSkillSet().getSelected().getName().getString().substring(1);
+        String skillHighlight = data.findPersona().get().getSkillSet().getSelected().getName().getString().substring(0, 1).toUpperCase();
 
         stack.push();
 

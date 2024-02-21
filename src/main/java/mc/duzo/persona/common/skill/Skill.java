@@ -32,26 +32,26 @@ public abstract class Skill implements Identifiable {
         PlayerData data = ServerData.getPlayerState(source);
 
         if (this.usesHealth()) {
-            source.damage(source.getDamageSources().generic(), source.getMaxHealth() * (this.cost() / 100f));
+            source.damage(source.getDamageSources().generic(), source.getMaxHealth() * (this.getCost() / 100f));
             return;
         }
 
-        data.removeSP(this.cost());
+        data.removeSP(this.getCost());
 
         ServerData.getServerState(source.getServer()).markDirty();
         PersonaMessages.syncData(source, source);
     }
 
-    public Text name() {
+    public Text getName() {
         return Text.translatable("skill." + id.getNamespace() + "." + id.getPath());
     }
-    public Text description() {
+    public Text getDescription() {
         return Text.translatable("skill." + id.getNamespace() + "." + id.getPath());
     }
     public abstract boolean usesHealth();
-    public abstract int cost();
-    public abstract double cooldown();
-    public SoundEvent useSound() {
+    public abstract int getCost();
+    public abstract double getCooldown();
+    public SoundEvent getUseSound() {
         return PersonaSounds.ATTACK;
     }
 
@@ -89,12 +89,12 @@ public abstract class Skill implements Identifiable {
             }
 
             @Override
-            public int cost() {
+            public int getCost() {
                 return cost;
             }
 
             @Override
-            public double cooldown() {
+            public double getCooldown() {
                 return cooldown;
             }
 
@@ -104,8 +104,8 @@ public abstract class Skill implements Identifiable {
             }
 
             @Override
-            public SoundEvent useSound() {
-                if (sound == null) return super.useSound();
+            public SoundEvent getUseSound() {
+                if (sound == null) return super.getUseSound();
                 return sound;
             }
         };

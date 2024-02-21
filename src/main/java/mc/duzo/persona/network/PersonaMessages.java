@@ -1,7 +1,6 @@
 package mc.duzo.persona.network;
 
 import mc.duzo.persona.PersonaMod;
-import mc.duzo.persona.client.network.PersonaClientMessages;
 import mc.duzo.persona.common.persona.Persona;
 import mc.duzo.persona.data.PlayerData;
 import mc.duzo.persona.data.ServerData;
@@ -99,9 +98,9 @@ public class PersonaMessages {
         Persona persona = data.findPersona().get();
 
         if (next) {
-            persona.skills().selectNext();
+            persona.getSkillSet().selectNext();
         } else {
-            persona.skills().selectPrevious();
+            persona.getSkillSet().selectPrevious();
         }
 
         ServerData.getServerState(player.getServer()).markDirty();
@@ -128,10 +127,10 @@ public class PersonaMessages {
         PlayerData data = ServerData.getPlayerState(player);
 
         if (data.isPersonaRevealed()) {
-            PersonaUtil.hide(player);
+            PersonaUtil.hidePersona(player);
             return;
         }
 
-        PersonaUtil.reveal(player);
+        PersonaUtil.revealPersona(player);
     }
 }
